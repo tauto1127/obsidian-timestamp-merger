@@ -29,6 +29,9 @@ export default class ObsidianTimestampMerger extends Plugin {
 			callback: () => {
 				new SampleModal(this.app).open();
 			},
+			editorCallback: (editor: Editor, view: MarkdownView) => {
+			}
+			
 		});
 		// This adds an editor command that can perform some operation on the current editor instance
 		this.addCommand({
