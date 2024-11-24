@@ -3,14 +3,14 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 // Remember to rename these classes and interfaces!
 
 interface MyPluginSettings {
-	mySetting: string;
+	timestampHeader: string;
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+	timestampHeader: 'timestamp'
 }
 
-export default class MyPlugin extends Plugin {
+export default class ObsidianTimestampMerger extends Plugin {
 	settings: MyPluginSettings;
 
 	async onload() {
@@ -108,9 +108,9 @@ class SampleModal extends Modal {
 }
 
 class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+	plugin: ObsidianTimestampMerger;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: ObsidianTimestampMerger) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -121,13 +121,13 @@ class SampleSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
+			.setName('Timestamp Header')
+			.setDesc('Specify where the timestamp should be placed in the note')
 			.addText(text => text
 				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
+				.setValue(this.plugin.settings.timestampHeader)
 				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
+					this.plugin.settings.timestampHeader = value;
 					await this.plugin.saveSettings();
 				}));
 	}
