@@ -41,8 +41,6 @@ export default class ObsidianTimestampMerger extends Plugin {
 				}
 
 				const nextHeading = sections?.slice(foundSectionIndex + 1).findIndex((e) => e.type === "heading");
-				console.log("next")
-				console.log(nextHeading)
 				const restSections = sections?.slice(foundSectionIndex + 1);
 				if(nextHeading == null) {
 					return
@@ -59,7 +57,15 @@ export default class ObsidianTimestampMerger extends Plugin {
                     ? nextHeading
                     : restSections.length) - 1
             ] ?? sections[foundSectionIndex];
-				console.log(lastSection);
+				const headingContent = editor.getRange({
+					ch: lastSection.position.start.col,
+					line: lastSection.position.start.line
+				}, {
+					ch: lastSection.position.end.col,
+					line: lastSection.position.end.line
+					})
+
+				console.log("headingContent: " + headingContent)
 
 			},
 			callback: () => {
