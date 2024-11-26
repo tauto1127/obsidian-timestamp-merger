@@ -1,4 +1,5 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { InputView } from 'input_view';
+import { App, Editor, MarkdownView, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
 // Remember to rename these classes and interfaces!
 
@@ -14,32 +15,55 @@ export default class ObsidianTimestampMerger extends Plugin {
 	settings: MyPluginSettings;
 
 	async onload() {
+		console.log("loaded timestampmerger");
 		await this.loadSettings();
-
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
 		// Perform additional things with the ribbon
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
 			id: 'obsidian-timestamp-merger',
 			name: 'Merge Timestamps',
-			callback: () => {
-				new SampleModal(this.app).open();
+			editorCallback: (editor: Editor, view: MarkdownView) => {
+				console.log(editor.getValue())
+				//var cache = this.app.workspace.getActiveFile().
+				const file = this.app.workspace.getActiveFile();
+				if(file == null) {
+					return
+				}
+				const cache = this.app.metadataCache.getFileCache(file);
+				const sections = cache?.sections;
+				const foundHeading = cache?.headings?.find((e) => e.heading === this.settings.timestampHeader);
+				if(foundHeading == null) {
+					return
+				}
+				const foundSectionIndex = sections?.findIndex((section) => section.position.start.line === foundHeading.position.start.line && section.type === "heading");
+				if(foundSectionIndex == null) {
+					return
+				}
+
+				const nextHeading = sections?.slice(foundSectionIndex + 1).findIndex((e) => e.type === "heading");
+				console.log("next")
+				console.log(nextHeading)
+				const restSections = sections?.slice(foundSectionIndex + 1);
+				if(nextHeading == null) {
+					return
+				}
+				if(sections == null) {
+					return
+				}
+				if(restSections == null) {
+					return
+				}
+				const lastSection =
+            restSections[
+                (nextHeading !== -1
+                    ? nextHeading
+                    : restSections.length) - 1
+            ] ?? sections[foundSectionIndex];
+				console.log(lastSection);
+
 			},
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-			}
-			
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'sample-editor-command',
-			name: 'Sample editor command',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection('Sample Editor Command');
+			callback: () => {
+				new InputView(this.app).open();
 			}
 		});
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
