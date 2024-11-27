@@ -22,7 +22,7 @@ export default class ObsidianTimestampMerger extends Plugin {
 		this.addCommand({
 			id: 'obsidian-timestamp-merger',
 			name: 'Merge Timestamps',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
+			editorCallback: async (editor: Editor, view: MarkdownView) => {
 				console.log(editor.getValue())
 				//var cache = this.app.workspace.getActiveFile().
 				const file = this.app.workspace.getActiveFile();
@@ -65,9 +65,14 @@ export default class ObsidianTimestampMerger extends Plugin {
 					line: lastSection.position.end.line
 					})
 
-				console.log("headingContent: " + headingContent)
-				new TimestampMergerModal(this.app, headingContent).open();
-
+				const modal = new TimestampMergerModal(this.app, headingContent);
+				modal.open();
+				const result = await modal.getResult();
+				console.log(result);
+				editor.replaceRange(result.map(t => `${t.created} ${t.content}`).join('\n'), 
+					{line: foundHeading.position.start.line + 1, ch: 0},
+					{line: lastSection.position.end.line, ch: lastSection.position.end.col}
+				);
 			},
 			callback: () => {
 				new InputView(this.app).open();
@@ -117,6 +122,12 @@ class TimestampMergerModal extends Modal {
 	onOpen() {
 	}
 
+	result: Timestamp[] = [];
+	isClosed = false;
+
+	getIsClosed() {
+		return this.isClosed;
+	}
 
 	onClose() {
 		const {contentEl} = this;
@@ -133,10 +144,18 @@ class TimestampMergerModal extends Modal {
 					return 1;
 				}
 			});
-			console.log('------------------')
 			console.log(timestamps);
+			this.result = [...timestamps];
 		}
 		contentEl.empty();
+		this.isClosed = true
+	}
+
+	async getResult(): Promise<Timestamp[]> {
+		while (!this.isClosed) {
+			await new Promise(resolve => setTimeout(resolve, 100));
+		}
+		return this.result;
 	}
 
 	timestampStrToTimestampArray(splitedContent: string[]) : Timestamp[]{
@@ -170,6 +189,7 @@ interface Timestamp {
 	created: string;
 	content: string;
 }
+
 
 class SampleSettingTab extends PluginSettingTab {
 	plugin: ObsidianTimestampMerger;
