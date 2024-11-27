@@ -66,32 +66,13 @@ export default class ObsidianTimestampMerger extends Plugin {
 					})
 
 				console.log("headingContent: " + headingContent)
+				new TimestampMergerModal(this.app, headingContent).open();
 
 			},
 			callback: () => {
 				new InputView(this.app).open();
 			}
 		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-sample-modal-complex',
-			name: 'Open sample modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-			}
-		});
-
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SampleSettingTab(this.app, this));
 	}
@@ -109,20 +90,85 @@ export default class ObsidianTimestampMerger extends Plugin {
 	}
 }
 
-class SampleModal extends Modal {
-	constructor(app: App) {
+class TimestampMergerModal extends Modal {
+	input = '';
+	headerContent = '';
+	constructor(app: App, headerContent: string) {
 		super(app);
+		this.headerContent = headerContent;
+		new Setting(this.contentEl)
+		.setName('タイムスタンプを入力してください')
+		new Setting(this.contentEl)
+		.addTextArea(text => {
+			text.onChange((value) => {
+				this.input = value;
+			})
+		})
+
+		new Setting(this.contentEl)
+		.addButton((btn) => {
+			btn.setButtonText('OK').onClick(() => {
+				console.log(this.input);
+				this.close();
+			})
+			})
 	}
 
 	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
 	}
+
 
 	onClose() {
 		const {contentEl} = this;
+		if(this.headerContent != null && this.input != null) {
+			const splitedContent = this.headerContent.split('\n');
+			let timestamps = this.timestampStrToTimestampArray(splitedContent);
+
+			const inputTimestamps = this.timestampStrToTimestampArray(this.input.split('\n'));
+			timestamps = timestamps.concat(inputTimestamps);
+			timestamps.sort((a, b) => {
+				if(a.created < b.created) {
+					return -1;
+				} else {
+					return 1;
+				}
+			});
+			console.log('------------------')
+			console.log(timestamps);
+		}
 		contentEl.empty();
 	}
+
+	timestampStrToTimestampArray(splitedContent: string[]) : Timestamp[]{
+		const output : Timestamp[] = [];
+		// 1行ずつ
+		splitedContent.forEach((line, i) => {
+			let isEdit	= false;
+			const timestamp = {
+				created: '',
+				content: ''
+			}
+			// 1行を空白ごとに分割
+			splitedContent[i].split(' ').forEach((word, j) => {
+				if(j === 0) {
+					timestamp.created = word;
+				} else {
+					timestamp.content += word;
+				}
+			});
+			if(timestamp.content === '') {
+				isEdit = true;
+				output[output.length - 1].content += timestamp.created;
+			}
+
+			if(!isEdit) output.push(timestamp);
+		})
+		return output;
+	}
+}
+interface Timestamp {
+	created: string;
+	content: string;
 }
 
 class SampleSettingTab extends PluginSettingTab {
