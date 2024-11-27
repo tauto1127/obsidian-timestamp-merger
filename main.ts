@@ -1,8 +1,6 @@
 import { InputView } from 'input_view';
 import { App, Editor, MarkdownView, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-// Remember to rename these classes and interfaces!
-
 interface MyPluginSettings {
 	timestampHeader: string;
 }
@@ -15,16 +13,11 @@ export default class ObsidianTimestampMerger extends Plugin {
 	settings: MyPluginSettings;
 
 	async onload() {
-		console.log("loaded timestampmerger");
 		await this.loadSettings();
-		// Perform additional things with the ribbon
-		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
 			id: 'obsidian-timestamp-merger',
 			name: 'Merge Timestamps',
 			editorCallback: async (editor: Editor, view: MarkdownView) => {
-				console.log(editor.getValue())
-				//var cache = this.app.workspace.getActiveFile().
 				const file = this.app.workspace.getActiveFile();
 				if(file == null) {
 					return
@@ -68,7 +61,6 @@ export default class ObsidianTimestampMerger extends Plugin {
 				const modal = new TimestampMergerModal(this.app, headingContent);
 				modal.open();
 				const result = await modal.getResult();
-				console.log(result);
 				editor.replaceRange(result.map(t => `${t.created} ${t.content}`).join('\n'), 
 					{line: foundHeading.position.start.line + 1, ch: 0},
 					{line: lastSection.position.end.line, ch: lastSection.position.end.col}
@@ -78,8 +70,7 @@ export default class ObsidianTimestampMerger extends Plugin {
 				new InputView(this.app).open();
 			}
 		});
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new TimestampMergerSettingTab(this.app, this));
 	}
 
 	onunload() {
@@ -113,7 +104,7 @@ class TimestampMergerModal extends Modal {
 		new Setting(this.contentEl)
 		.addButton((btn) => {
 			btn.setButtonText('OK').onClick(() => {
-				console.log(this.input);
+				c72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいです72行目で特定のヘッダーの中身をresultで置換したいですonsole.log(this.input);
 				this.close();
 			})
 			})
@@ -144,7 +135,6 @@ class TimestampMergerModal extends Modal {
 					return 1;
 				}
 			});
-			console.log(timestamps);
 			this.result = [...timestamps];
 		}
 		contentEl.empty();
@@ -191,7 +181,7 @@ interface Timestamp {
 }
 
 
-class SampleSettingTab extends PluginSettingTab {
+class TimestampMergerSettingTab extends PluginSettingTab {
 	plugin: ObsidianTimestampMerger;
 
 	constructor(app: App, plugin: ObsidianTimestampMerger) {
