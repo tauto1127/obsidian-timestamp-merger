@@ -149,6 +149,7 @@ class TimestampMergerModal extends Modal {
 
 	timestampStrToTimestampArray(splitedContent: string[]) : Timestamp[]{
 		const output : Timestamp[] = [];
+		let noContentCount = 0;
 		// 1行ずつ
 		splitedContent.forEach((line, i) => {
 			let isEdit	= false;
@@ -166,7 +167,10 @@ class TimestampMergerModal extends Modal {
 			});
 			if(timestamp.content === '') {
 				isEdit = true;
-				output[output.length - 1].content += timestamp.created;
+				output[output.length - 1 - noContentCount].content += timestamp.created;
+				noContentCount++;
+			} else {
+				noContentCount = 0;
 			}
 
 			if(!isEdit) output.push(timestamp);
